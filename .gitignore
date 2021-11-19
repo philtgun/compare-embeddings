@@ -144,3 +144,7 @@ dmypy.json
 # Win
 ehthumbs.db
 Thumbs.db
+
+# Custom
+data
+output
