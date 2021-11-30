@@ -46,7 +46,7 @@ python analyze.py data data/list.csv output/cosine.csv --at 5 10 50 200 --indice
 The results are written to `output/similarity.csv`. To plot the results:
 
 ```shell
-python visualize.py output/cosine.csv --output output/cosine.png
+python visualize.py output/cosine.csv output/cosine.png
 ```
 
 ## Dev

@@ -11,7 +11,7 @@ def visualize(input_file: Path, output_file: Path, scale: int) -> None:
     df_all = pd.read_csv(input_file)
     n_at_list = sorted(df_all['at'].unique())
     n_rows = int(np.ceil(len(n_at_list) / 2))
-    fig, axes = plt.subplots(n_rows, 2, figsize=(scale * 2, scale * n_rows), sharex=True, sharey=True)
+    fig, axes = plt.subplots(n_rows, 2, figsize=(scale * 2, scale * n_rows), sharex='all', sharey='all')
 
     for n_at, ax in zip(n_at_list, axes.flat):
         df = df_all[df_all['at'] == n_at]
