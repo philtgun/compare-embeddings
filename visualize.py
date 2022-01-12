@@ -21,13 +21,17 @@ def visualize(input_file: Path, output_file: Path, scale: int) -> None:
         matrix = np.zeros((n, n))
         for _, row in df.iterrows():
             i, j = names_indices[row['src']], names_indices[row['dst']]
-            matrix[i, j] = row['similarity'] / (n_at - 1)
-            matrix[j, i] = row['similarity'] / (n_at - 1)
+            matrix[i, j] = row['similarity']
+            matrix[j, i] = row['similarity']
 
         np.fill_diagonal(matrix, 1)
+        to_str = np.vectorize(lambda x: f'{x:.2f}'.removeprefix('0') if x < 1.0 else ' ')
+        annot = to_str(matrix)
+
         ax.set_title(f'@{n_at}')
-        sns.heatmap(matrix, annot=True, fmt='.2f', ax=ax, cmap='mako_r', xticklabels=names, yticklabels=names,
+        sns.heatmap(matrix, annot=annot, fmt='s', ax=ax, cmap='mako_r', xticklabels=names, yticklabels=names,
                     square=True, vmin=0, vmax=1, cbar=False)
+        ax.tick_params(left=False, bottom=False)
 
     if output_file is not None:
         plt.savefig(output_file, bbox_inches='tight')
