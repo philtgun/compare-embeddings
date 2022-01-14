@@ -49,6 +49,11 @@ The results are written to `output/similarity.csv`. To plot the results:
 python visualize.py output/cosine.csv output/cosine.png
 ```
 
+To generate JSON with the examples:
+```shell
+python examples.py data data/list.csv output/exp.json --indices-file data/indices.txt --ids-file data/ids.txt --seed 0
+```
+
 ## Dev
 ```shell
 pip install pre-commit

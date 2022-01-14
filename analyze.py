@@ -10,58 +10,66 @@ from sklearn.neighbors import NearestNeighbors
 from tqdm import tqdm
 
 
-def compute_neighbors(embeddings_file: Path, n_neighbors: int, metric: str, indices: Optional[np.ndarray]):
+def compute_neighbors(embeddings_file: Path, n_neighbors: int, metric: str,
+                      indices: Optional[np.ndarray]) -> np.ndarray:
     embeddings = np.load(str(embeddings_file))
     if indices is not None:
         embeddings = embeddings[indices]
-    model = NearestNeighbors(n_neighbors=n_neighbors, metric=metric)
+    model = NearestNeighbors(n_neighbors=n_neighbors + 1, metric=metric)
     model.fit(embeddings)
     _, neighbors = model.kneighbors(embeddings)
-    return neighbors
+    return neighbors[:, 1:]
 
 
-def intersect(src, dst):
+def intersect(src: list, dst: list) -> float:
     return len(set(src) & set(dst)) / len(src)
 
 
-def spearman(src, dst):
+def spearman(src: list, dst: list) -> float:
     ids = sorted(set(src) | set(dst))
     src_idx = [np.where(src == i)[0][0] if i in src else len(src) for i in ids]
     dst_idx = [np.where(dst == i)[0][0] if i in dst else len(dst) for i in ids]
     return spearmanr(src_idx, dst_idx).correlation
 
 
-def intersect_rbo(src, dst):
+def intersect_rbo(src: list, dst: list) -> float:
     import rbo
     return rbo.RankingSimilarity(src, dst).rbo()
 
 
-def analyze(input_dir: Path, list_file: Path, output_file: Path, n_neighbors_list: list[int],
-            metric: str, indices_file: Path = None) -> None:
+def load_and_compute_neighbors(input_dir: Path, list_file: Path, n_neighbors: int, metric: str,
+                               indices_file: Path = None) -> dict[str, np.ndarray]:
     embeddings_list = pd.read_csv(list_file, comment='#')
-    n_embeddings = len(embeddings_list)
-
     indices = np.loadtxt(str(indices_file), dtype=int) if indices_file is not None else None
 
-    output_file.parent.mkdir(exist_ok=True)
     neighbors_all = {}
-    for name, embeddings_file in tqdm(embeddings_list.values, total=n_embeddings):
-        neighbors_all[name] = compute_neighbors(input_dir / embeddings_file, max(n_neighbors_list)+1, metric, indices)
+    for name, embeddings_file in tqdm(embeddings_list.values, total=len(embeddings_list)):
+        neighbors_all[name] = compute_neighbors(input_dir / embeddings_file, n_neighbors, metric, indices)
+
+    return neighbors_all
+
+
+def analyze(input_dir: Path, list_file: Path, output_file: Path, n_neighbors_list: list[int],
+            metric: str, indices_file: Path = None) -> None:
+
+    neighbors_all = load_and_compute_neighbors(input_dir, list_file, max(n_neighbors_list), metric, indices_file)
+    n_embeddings = len(neighbors_all)
 
     results: dict[str, list] = {'src': [], 'dst': [], 'similarity': [], 'at': []}
-    for name_src, name_dst in tqdm(itertools.combinations(embeddings_list.name, 2),
+    for name_src, name_dst in tqdm(itertools.combinations(neighbors_all.keys(), 2),
                                    total=n_embeddings * (n_embeddings - 1) // 2):
         for n_neighbors in n_neighbors_list:
-            n_common_neighbors = []
+            similarity = []
             for (row_src, row_dst) in zip(neighbors_all[name_src], neighbors_all[name_dst]):
                 # naive implementation
-                n_common_neighbors.append(intersect_rbo(row_src[1:n_neighbors+1], row_dst[1:n_neighbors+1]))
+                similarity.append(intersect(row_src[:n_neighbors], row_dst[:n_neighbors]))
             results['src'].append(name_src)
             results['dst'].append(name_dst)
-            results['similarity'].append(np.mean(n_common_neighbors))
+            results['similarity'].append(np.mean(similarity))
             results['at'].append(n_neighbors)
 
     results_df = pd.DataFrame(results)
+    output_file.parent.mkdir(exist_ok=True)
     results_df.to_csv(output_file, index=False)
 
 
@@ -73,7 +81,7 @@ if __name__ == '__main__':
                              'FILE')
     parser.add_argument('output_file', type=Path,
                         help='Output .csv file that will contain the computed results')
-    parser.add_argument('--at', nargs='+', type=int, default=[5, 10, 20, 50, 100, 200],
+    parser.add_argument('--at', nargs='+', type=int, default=[5, 10, 100, 200],
                         help='Number of neighbors retrieved')
     parser.add_argument('--metric', type=str, default='minkowski', help='Distance used to compute nearest neighbors')
     parser.add_argument('--indices-file', type=Path,
