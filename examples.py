@@ -8,7 +8,7 @@ from analyze import load_and_compute_neighbors
 
 
 def generate_examples(input_dir: Path, list_file: Path, output_file: Path, indices_file: Path, ids_file: Path,
-                      n_neighbors: int, n_references: int, strategy: str) -> None:
+                      n_neighbors: int, n_references: int, strategy: str, custom_ids: list[int]) -> None:
     neighbors_all = load_and_compute_neighbors(input_dir, list_file, n_neighbors, 'cosine', indices_file)
     track_ids = np.loadtxt(str(ids_file), dtype=int)
 
@@ -19,6 +19,10 @@ def generate_examples(input_dir: Path, list_file: Path, output_file: Path, indic
         reference_ids = []
     elif strategy == 'random':
         reference_ids = np.random.choice(track_ids, n_references)
+    elif strategy == 'custom':
+        if len(custom_ids) != n_references:
+            raise ValueError(f'Custom-ids should have exactly -n ({n_references}) items for "custom" strategy')
+        reference_ids = custom_ids
     else:
         raise ValueError(f'Invalid strategy: {strategy}')
 
@@ -34,21 +38,23 @@ def generate_examples(input_dir: Path, list_file: Path, output_file: Path, indic
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('input_dir', type=Path, help='Input directory that contains .npy files')
+    parser.add_argument('input_dir', type=Path, help='input directory that contains npy files')
     parser.add_argument('list_file', type=Path,
-                        help='List .csv file that contains list of spaces to compare, needs to contain columns NAME, '
+                        help='list csv file that contains list of spaces to compare, needs to contain columns NAME, '
                              'FILE')
-    parser.add_argument('output_file', type=Path, help='Output .json file with data for experiment')
+    parser.add_argument('output_file', type=Path, help='output json file with data for experiment')
     parser.add_argument('--indices-file', type=Path,
-                        help='.txt file that contains indices that subset the data for analysis')
+                        help='txt file that contains indices that subset the data for analysis')
     parser.add_argument('--ids-file', type=Path,
-                        help='.txt file that contains Jamendo ids that correspond to the indices')
+                        help='txt file that contains Jamendo ids that correspond to the indices')
 
-    parser.add_argument('--at', type=int, default=4, help='Number of neighbors retrieved')
-    parser.add_argument('-n', type=int, default=4, help='Number of seed tracks')
-    parser.add_argument('--strategy', type=str, choices=['random', 'dissimilar'], default='random',
+    parser.add_argument('--at', type=int, default=4, help='number of neighbors retrieved')
+    parser.add_argument('-n', type=int, default=4, help='number of seed tracks')
+    parser.add_argument('--strategy', type=str, choices=['random', 'dissimilar', 'custom'], default='random',
                         help='how to pick the reference tracks')
-    parser.add_argument('--seed', type=int, help='options seed for reproducibility')
+    parser.add_argument('--seed', type=int, help='optional seed for reproducibility')
+    parser.add_argument('--custom-ids', nargs='+', type=int,
+                        help='track ids for the custom strategy, expected exactly -n ids')
 
     args = parser.parse_args()
 
@@ -56,4 +62,4 @@ if __name__ == '__main__':
         np.random.seed(args.seed)
 
     generate_examples(args.input_dir, args.list_file, args.output_file, args.indices_file, args.ids_file,
-                      args.at, args.n, args.strategy)
+                      args.at, args.n, args.strategy, args.custom_ids)

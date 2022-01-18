@@ -54,6 +54,11 @@ To generate JSON with the examples:
 python examples.py data data/list.csv output/exp.json --indices-file data/indices.txt --ids-file data/ids.txt --seed 0
 ```
 
+The command used to generate the data file for `similarity-experiment`:
+```shell
+python examples.py data data/lists/selected.csv output/exp.json --indices-file data/indices.txt --ids-file data/ids.txt --strategy custom --custom-ids 1051204 1106305 533193 1136991
+```
+
 ## Dev
 ```shell
 pip install pre-commit
