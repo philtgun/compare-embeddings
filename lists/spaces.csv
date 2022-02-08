@@ -1,0 +1,13 @@
+name,file
+AudioSet VGGish embeddings,deep-jam/cb-audioset-vggish-embeddings.npy
+MSD MusiCNN embeddings,deep-jam/cb-msd-musicnn-embeddings.npy
+MSD MusiCNN taggrams,deep-jam/cb-msd-musicnn-taggrams.npy
+MSD VGG embeddings,deep-jam/cb-msd-vgg-embeddings.npy
+MSD VGG taggrams,deep-jam/cb-msd-vgg-taggrams.npy
+MTAT MusiCNN embeddings,deep-jam/cb-mtat-musicnn-embeddings.npy
+MTAT MusiCNN taggrams,deep-jam/cb-mtat-musicnn-taggrams.npy
+MTAT VGG embeddings,deep-jam/cb-mtat-vgg-embeddings.npy
+MTAT VGG taggrams,deep-jam/cb-mtat-vgg-taggrams.npy
+ CF factors (64),deep-jam/cf-64.npy
+ CF factors (96),deep-jam/cf-tracks_96.npy
+ CF factors (128),deep-jam/cf-tracks_128.npy

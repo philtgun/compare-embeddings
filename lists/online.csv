@@ -1,0 +1,6 @@
+name,file
+CF factors (96),deep-jam/cf-96.npy
+MSD VGG taggrams,deep-jam/cb-msd-vgg-taggrams.npy
+MSD MusiCNN taggrams,deep-jam/cb-msd-musicnn-taggrams.npy
+MTAT MusiCNN embeddings,deep-jam/cb-mtt-musicnn-embeddings.npy
+AudioSet VGGish embeddings,deep-jam/cb-audioset-vggish-embeddings.npy

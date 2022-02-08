@@ -28,7 +28,7 @@ def project(input_file: Path, output_dir: Path, projections: list[str], n_pcs: i
             raise ValueError(f'Invalid projection name: {projection_name}')
 
         output_dir.mkdir(exist_ok=True)
-        output_file = output_dir / (input_file.stem + '_' + projection_name + '_' + str(seed) + '.npy')
+        output_file = output_dir / (input_file.stem + '-' + projection_name + '-' + str(seed) + '.npy')
         np.save(str(output_file), embeddings_projected)
 
 

@@ -1,0 +1,7 @@
+name,file
+Embeddings Original,deep-jam/cb-msd-musicnn-taggrams.npy
+Embeddings PCA,projections/cb-msd-musicnn-taggrams-pca_0.npy
+Embeddings t-SNE 1,projections/cb-msd-musicnn-taggrams-tsne-0.npy
+Embeddings UMAP 1,projections/cb-msd-musicnn-taggrams-umap-0.npy
+Embeddings t-SNE 2,projections/cb-msd-musicnn-taggrams-tsne-1.npy
+Embeddings UMAP 2,projections/cb-msd-musicnn-taggrams-umap-1.npy
