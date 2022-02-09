@@ -9,5 +9,5 @@ MTAT MusiCNN taggrams,deep-jam/cb-mtat-musicnn-taggrams.npy
 MTAT VGG embeddings,deep-jam/cb-mtat-vgg-embeddings.npy
 MTAT VGG taggrams,deep-jam/cb-mtat-vgg-taggrams.npy
  CF factors (64),deep-jam/cf-64.npy
- CF factors (96),deep-jam/cf-tracks_96.npy
- CF factors (128),deep-jam/cf-tracks_128.npy
+ CF factors (96),deep-jam/cf-96.npy
+ CF factors (128),deep-jam/cf-128.npy

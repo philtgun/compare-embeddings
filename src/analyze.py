@@ -1,3 +1,18 @@
+# Copyright 2022 Philip Tovstogan, Music Technology Group
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import argparse
 import itertools
 from pathlib import Path
@@ -61,7 +76,6 @@ def analyze(input_dir: Path, list_file: Path, output_file: Path, n_neighbors_lis
         for n_neighbors in n_neighbors_list:
             similarity = []
             for (row_src, row_dst) in zip(neighbors_all[name_src], neighbors_all[name_dst]):
-                # naive implementation
                 similarity.append(intersect(row_src[:n_neighbors], row_dst[:n_neighbors]))
             results['src'].append(name_src)
             results['dst'].append(name_dst)
@@ -74,16 +88,19 @@ def analyze(input_dir: Path, list_file: Path, output_file: Path, n_neighbors_lis
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('input_dir', type=Path, help='Input directory that contains .npy files')
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description='Compute NN-similarity at multiple cutoffs for spaces that are specified in the list file and '
+                    'save the results in .csv file')
+    parser.add_argument('input_dir', type=Path, help='input directory that contains .npy files')
     parser.add_argument('list_file', type=Path,
-                        help='List .csv file that contains list of spaces to compare, needs to contain columns NAME, '
+                        help='list .csv file that contains list of spaces to compare, needs to contain columns NAME, '
                              'FILE')
     parser.add_argument('output_file', type=Path,
-                        help='Output .csv file that will contain the computed results')
+                        help='output .csv file that will contain the computed results')
     parser.add_argument('--at', nargs='+', type=int, default=[5, 10, 100, 200],
-                        help='Number of neighbors retrieved')
-    parser.add_argument('--metric', type=str, default='minkowski', help='Distance used to compute nearest neighbors')
+                        help='number of neighbors retrieved')
+    parser.add_argument('--metric', type=str, default='minkowski', help='distance used to compute nearest neighbors')
     parser.add_argument('--indices-file', type=Path,
                         help='.txt file that contains indices that subset the data for analysis')
     args = parser.parse_args()
