@@ -3,10 +3,8 @@
 This repository contains code to accompany the publication (TBA).
 
 ## Setup environment
+Use python 3.9+ and set up the virtual environment.
 ```shell
-python3.9 -m venv venv
-source venv/bin/activate.fish
-pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
