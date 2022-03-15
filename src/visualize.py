@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib import rcParams
 
 
 def visualize(input_file: Path, output_file: Path, scale: int) -> None:
@@ -62,6 +63,11 @@ if __name__ == '__main__':
     parser.add_argument('input_file', type=Path, help='input similarity.csv file')
     parser.add_argument('output_file', type=Path, help='output .png or .pdf plot file')
     parser.add_argument('--scale', type=float, default=6, help='increase this number if the figure is too cluttered')
+    parser.add_argument('--serif', action='store_true', help='use serif font for figures (e.g. for thesis)')
     args = parser.parse_args()
+
+    if args.serif:
+        rcParams['font.family'] = 'serif'
+        rcParams['font.serif'] = 'Times New Roman'
 
     visualize(args.input_file, args.output_file, args.scale)
