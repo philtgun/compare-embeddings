@@ -13,7 +13,7 @@ pip install -r requirements.txt
 
 The lists files have the lists of spaces that will be compared with two columns `name,file` with `file` containin
 
-Download the **LatentJam** dataset from Zenodo and extract it into `data/latent-jam`:
+Download the **LatentJam** dataset from [Zenodo](https://zenodo.org/record/6010468) and extract it into `data/latent-jam`:
 * `.npy` files are the embeddings files in the shape of `(n_tracks, space_dimensions)`
 * `large-jamendo-ids.txt` is the list of correspondent Jamendo ids for the full dataset
 * `small-indices.txt` is the list of indices of elements from large dataset that comprises the small dataset.
